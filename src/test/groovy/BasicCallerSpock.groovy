@@ -8,40 +8,41 @@ class BasicCallerSpock extends Specification {
 	def caller
 
 	def setup() {
-		caller = new BasicCaller(new RegexCallParser())
+		caller = new BasicCaller(new RegexCallParser(), SampleClass)
 	}
 
 	def "call static method with no args"() {
 		when:
-			def res = caller.call('sample', SampleClass)
+			def res = caller.call('sample')
 		then:
 			res == 'sample01'
 	}
 
 	def "call static method with one arg"() {
 		when:
-			def res = caller.call('test11call', SampleClass)
+			def res = caller.call('test11call')
 		then:
 			res == 'test:11'
 	}
 
 	def "call static method with two args"() {
 		when:
-			def res = caller.call('10 plus 20', SampleClass)
+			def res = caller.call('10 plus 20')
 		then:
 			res == 30
 	}
 
 	def "call static method with String and int args"() {
 		when:
-			def res = caller.call('test : 20', SampleClass)
+			def res = caller.call('test : 20')
 		then:
 			res == 'test : 200'
 	}
 
 	def "call instance method with one arg"() {
 		when:
-			def res = caller.call('test1call', new SampleClass2(name: 'abc'))
+			def caller = new BasicCaller(new RegexCallParser(), new SampleClass2(name: 'abc'))
+			def res = caller.call('test1call')
 		then:
 			res == 'abc-1'
 	}

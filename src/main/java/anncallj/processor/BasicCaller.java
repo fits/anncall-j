@@ -6,32 +6,32 @@ import java.lang.reflect.Method;
 
 public class BasicCaller implements Caller {
 	private CallParser parser;
+	private Class<?> targetClass;
+	private Object targetObj;
 
-	public BasicCaller(CallParser parser) {
+	public BasicCaller(CallParser parser, Class<?> targetClass) {
 		this.parser = parser;
+		this.targetClass = targetClass;
+	}
+
+	public BasicCaller(CallParser parser, Object targetObj) {
+		this.parser = parser;
+		this.targetClass = targetObj.getClass();
+		this.targetObj = targetObj;
 	}
 
 	@Override
-	public <T> T call(String callValue, Class<?> cls) {
-		return callMethod(callValue, cls, null);
-	}
-
-	@Override
-	public <S, T> T call(String callValue, S obj) {
-		return callMethod(callValue, obj.getClass(), obj);
-	}
-
-	private <S, T> T callMethod(String callValue, Class<?> cls, S obj) {
+	public <T> T call(String callValue) {
 		T result = null;
 
-		for (Method method : cls.getMethods()) {
+		for (Method method : targetClass.getMethods()) {
 			Call ann = method.getAnnotation(Call.class);
 
 			if (ann != null) {
 				Object[] params = parser.parse(callValue, ann, method.getParameterTypes());
-				
+
 				if (params != null) {
-					result = invoke(method, params, obj);
+					result = invoke(method, params, targetObj);
 					break;
 				}
 			}
