@@ -2,13 +2,15 @@ package anncallj.processor;
 
 import anncallj.annotation.Call;
 import anncallj.processor.CallProcessor;
-import org.apache.commons.beanutils.ConvertUtils;
 
 import java.lang.reflect.Method;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RegexCallProcessor implements CallProcessor {
+	private CallParser parser;
+
+	public RegexCallProcessor(CallParser parser) {
+		this.parser = parser;
+	}
 
 	@Override
 	public <T> T call(String callValue, Class<?> cls) {
@@ -27,10 +29,10 @@ public class RegexCallProcessor implements CallProcessor {
 			Call ann = method.getAnnotation(Call.class);
 
 			if (ann != null) {
-				Matcher m = match(callValue, ann);
-
-				if (m.matches()) {
-					result = invoke(method, m, obj);
+				Object[] params = parser.parse(callValue, ann, method.getParameterTypes());
+				
+				if (params != null) {
+					result = invoke(method, params, obj);
 					break;
 				}
 			}
@@ -39,30 +41,12 @@ public class RegexCallProcessor implements CallProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T invoke(Method method, Matcher m, Object obj) {
+	private <T> T invoke(Method method, Object[] params, Object obj) {
 		try {
-			return (T)method.invoke(obj, parseArgs(method, m));
+			return (T)method.invoke(obj, params);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	private Object[] parseArgs(Method method, Matcher m) {
-		Class<?>[] paramTypes = method.getParameterTypes();
-
-		int size = Math.min(paramTypes.length, m.groupCount());
-		
-		Object[] result = new Object[size];
-
-		for (int i = 0; i < result.length; i++) {
-			result[i] = ConvertUtils.convert(m.group(i + 1), paramTypes[i]);
-		}
-		return result;
-	}
-
-	private Matcher match(String callValue, Call ann) {
-		Pattern ptn = Pattern.compile(ann.value());
-		return ptn.matcher(callValue);
 	}
 }
