@@ -1,12 +1,14 @@
 import anncallj.annotation.Call
+import anncallj.processor.RegexCallParser
 import anncallj.processor.RegexCallProcessor
+
 import spock.lang.*
 
 class RegexCallProcessorSpock extends Specification {
 	def processor
 
 	def setup() {
-		processor = new RegexCallProcessor()
+		processor = new RegexCallProcessor(new RegexCallParser())
 	}
 
 	def "call static method with no args"() {
