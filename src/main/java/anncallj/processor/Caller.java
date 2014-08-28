@@ -1,6 +1,6 @@
 package anncallj.processor;
 
-public interface CallProcessor {
+public interface Caller {
 	/**
 	 * 
 	 * @param callValue

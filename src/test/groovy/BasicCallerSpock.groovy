@@ -1,47 +1,47 @@
 import anncallj.annotation.Call
 import anncallj.processor.RegexCallParser
-import anncallj.processor.RegexCallProcessor
+import anncallj.processor.BasicCaller
 
 import spock.lang.*
 
-class RegexCallProcessorSpock extends Specification {
-	def processor
+class BasicCallerSpock extends Specification {
+	def caller
 
 	def setup() {
-		processor = new RegexCallProcessor(new RegexCallParser())
+		caller = new BasicCaller(new RegexCallParser())
 	}
 
 	def "call static method with no args"() {
 		when:
-			def res = processor.call('sample', SampleClass)
+			def res = caller.call('sample', SampleClass)
 		then:
 			res == 'sample01'
 	}
 
 	def "call static method with one arg"() {
 		when:
-			def res = processor.call('test11call', SampleClass)
+			def res = caller.call('test11call', SampleClass)
 		then:
 			res == 'test:11'
 	}
 
 	def "call static method with two args"() {
 		when:
-			def res = processor.call('10 plus 20', SampleClass)
+			def res = caller.call('10 plus 20', SampleClass)
 		then:
 			res == 30
 	}
 
 	def "call static method with String and int args"() {
 		when:
-			def res = processor.call('test : 20', SampleClass)
+			def res = caller.call('test : 20', SampleClass)
 		then:
 			res == 'test : 200'
 	}
 
 	def "call instance method with one arg"() {
 		when:
-			def res = processor.call('test1call', new SampleClass2(name: 'abc'))
+			def res = caller.call('test1call', new SampleClass2(name: 'abc'))
 		then:
 			res == 'abc-1'
 	}

@@ -1,14 +1,13 @@
 package anncallj.processor;
 
 import anncallj.annotation.Call;
-import anncallj.processor.CallProcessor;
 
 import java.lang.reflect.Method;
 
-public class RegexCallProcessor implements CallProcessor {
+public class BasicCaller implements Caller {
 	private CallParser parser;
 
-	public RegexCallProcessor(CallParser parser) {
+	public BasicCaller(CallParser parser) {
 		this.parser = parser;
 	}
 
