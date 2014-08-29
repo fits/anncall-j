@@ -7,7 +7,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 
 import anncallj.annotation.Call;
 
-public class RegexCallParser implements CallParser {
+public class RegexCallParser implements CallParser<String> {
 	/**
 	 * {@inheritDoc}
 	 */

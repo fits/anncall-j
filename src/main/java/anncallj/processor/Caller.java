@@ -1,10 +1,10 @@
 package anncallj.processor;
 
-public interface Caller {
+public interface Caller<S> {
 	/**
 	 * 
 	 * @param callValue
 	 * @return
 	 */
-	<T> T call(String callValue);
+	<T> T call(S callValue);
 }
