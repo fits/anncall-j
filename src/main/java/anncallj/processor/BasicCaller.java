@@ -1,39 +1,37 @@
 package anncallj.processor;
 
 import anncallj.annotation.Call;
+import anncallj.data.Tuple2;
+import anncallj.data.Tuple3;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.Method;
 
 public class BasicCaller<S> implements Caller<S> {
+	private Log log = LogFactory.getLog(BasicCaller.class);
+
 	private CallParser<S> parser;
-	private Class<?> targetClass; // TODO: 複数化
-	private Object targetObj;
+	private CallTarget callTarget;
 
-	public BasicCaller(CallParser<S> parser, Class<?> targetClass) {
+	public BasicCaller(CallParser<S> parser, CallTarget callTarget) {
 		this.parser = parser;
-		this.targetClass = targetClass;
-	}
-
-	public BasicCaller(CallParser<S> parser, Object targetObj) {
-		this.parser = parser;
-		this.targetClass = targetObj.getClass();
-		this.targetObj = targetObj;
+		this.callTarget = callTarget;
 	}
 
 	@Override
 	public <T> T call(S callValue) {
 		T result = null;
 
-		for (Method method : targetClass.getMethods()) {
-			Call ann = method.getAnnotation(Call.class);
+		for (Tuple3<Call, Method, Object> target : callTarget.list()) {
+			Method method = target._2();
 
-			if (ann != null) {
-				Object[] params = parser.parse(callValue, ann, method.getParameterTypes());
+			Tuple2<Boolean, Object[]> params = parser.parse(callValue, target._1(), method.getParameterTypes());
 
-				if (params != null) {
-					result = invoke(method, params, targetObj);
-					break;
-				}
+			if (params._1()) {
+				result = invoke(method, params._2(), target._3());
+				break;
 			}
 		}
 		return result;
@@ -44,8 +42,7 @@ public class BasicCaller<S> implements Caller<S> {
 		try {
 			return (T)method.invoke(obj, params);
 		} catch (Exception e) {
-            // TODO: ログ出力
-			e.printStackTrace();
+			log.error("failed call method", e);
 		}
 		return null;
 	}

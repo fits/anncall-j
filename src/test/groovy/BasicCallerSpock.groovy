@@ -1,4 +1,5 @@
 import anncallj.annotation.Call
+import anncallj.processor.ObjectCallTarget
 import anncallj.processor.RegexCallParser
 import anncallj.processor.BasicCaller
 
@@ -8,7 +9,7 @@ class BasicCallerSpock extends Specification {
 	def caller
 
 	def setup() {
-		caller = new BasicCaller(new RegexCallParser(), SampleClass)
+		caller = new BasicCaller(new RegexCallParser(), new ObjectCallTarget(SampleClass))
 	}
 
 	def "call static method with no args"() {
@@ -41,7 +42,7 @@ class BasicCallerSpock extends Specification {
 
 	def "call instance method with one arg"() {
 		when:
-			def caller = new BasicCaller(new RegexCallParser(), new SampleClass2(name: 'abc'))
+			def caller = new BasicCaller(new RegexCallParser(), new ObjectCallTarget(new SampleClass2(name: 'abc')))
 			def res = caller.call('test1call')
 		then:
 			res == 'abc-1'

@@ -15,8 +15,9 @@ class OgnlCallParserSpock extends Specification {
 			def ann = { 'name == "sample01"' } as Call
 			def res = parser.parse(data, ann, [SampleData] as Class[])
 		then:
-			res.length == 1
-			res[0] == data
+			res._1() == true
+			res._2().length == 1
+			res._2()[0] == data
 	}
 
 	def "true ognl with equals name and value"() {
@@ -25,8 +26,9 @@ class OgnlCallParserSpock extends Specification {
 			def ann = { 'name eq "sample01" and value eq 10' } as Call
 			def res = parser.parse(data, ann, [SampleData] as Class[])
 		then:
-			res.length == 1
-			res[0] == data
+			res._1() == true
+			res._2().length == 1
+			res._2()[0] == data
 	}
 
 	def "false ognl with not equals name"() {
@@ -35,7 +37,7 @@ class OgnlCallParserSpock extends Specification {
 			def ann = { 'name == "sampleAAA"' } as Call
 			def res = parser.parse(data, ann, [SampleData] as Class[])
 		then:
-			res == null
+			res._1() == false
 	}
 
 	def "true ognl and Object parameter type"() {
@@ -44,8 +46,9 @@ class OgnlCallParserSpock extends Specification {
 			def ann = { 'name == "sample01"' } as Call
 			def res = parser.parse(data, ann, [Object] as Class[])
 		then:
-			res.length == 1
-			res[0] == data
+			res._1() == true
+			res._2().length == 1
+			res._2()[0] == data
 	}
 
 	def "true ognl and illegal parameter type"() {
@@ -54,7 +57,7 @@ class OgnlCallParserSpock extends Specification {
 			def ann = { 'name == "sample01"' } as Call
 			def res = parser.parse(data, ann, [String] as Class[])
 		then:
-			res == null
+			res._1() == false
 	}
 
 	class SampleData {
