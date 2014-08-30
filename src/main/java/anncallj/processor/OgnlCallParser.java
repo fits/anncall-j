@@ -2,27 +2,29 @@ package anncallj.processor;
 
 import anncallj.annotation.Call;
 
+import anncallj.data.Tuple2;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.ognl.Ognl;
 
 public class OgnlCallParser implements CallParser<Object> {
+	private Log log = LogFactory.getLog(OgnlCallParser.class);
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Object[] parse(Object callValue, Call ann, Class<?>[] paramTypes) {
+	public Tuple2<Boolean, Object[]> parse(Object callValue, Call ann, Class<?>[] paramTypes) {
 		try {
 			if (isParameterType(callValue, paramTypes)) {
 				boolean res = Ognl.getValue(ann.value(), callValue, Boolean.class);
 
-				if (res) {
-					return new Object[] { callValue };
-				}
+				return new Tuple2<>(res, new Object[] { callValue });
 			}
 		} catch (Exception e) {
-			// TODO: write to log
-			e.printStackTrace();
+			log.error("failed ognl", e);
 		}
-		return null;
+		return new Tuple2<>(false, null);
 	}
 
 	private boolean isParameterType(Object callValue, Class<?>[] paramTypes) {
