@@ -10,14 +10,25 @@ compileJava.options.encoding = enc
 repositories {
 	mavenCentral()
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'http://repository.apache.org/snapshots/' }
+	maven { url 'http://repository.apache.org/snapshots/' }
 }
 
 dependencies {
 	compile 'org.apache.commons:commons-lang3:3.3.2'
 	compile 'commons-beanutils:commons-beanutils:1.9.2'
-    compile 'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
+	compile 'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
 
 	testCompile 'org.codehaus.groovy:groovy-all:2.3.6'
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT'
+}
+
+task dist(type: Zip, dependsOn: jar) {
+	into('lib') {
+		from jar.archivePath
+		from configurations.runtime
+	}
+}
+
+artifacts {
+	archives dist
 }
