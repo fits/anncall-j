@@ -5,6 +5,12 @@ version = '0.1'
 
 def enc = 'UTF-8'
 
+def libs = [
+	'org.apache.commons:commons-lang3:3.3.2',
+	'commons-beanutils:commons-beanutils:1.9.2',
+	'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
+]
+
 compileJava.options.encoding = enc
 
 repositories {
@@ -14,9 +20,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.apache.commons:commons-lang3:3.3.2'
-	compile 'commons-beanutils:commons-beanutils:1.9.2'
-	compile 'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
+	libs.each { compile it }
 
 	testCompile 'org.codehaus.groovy:groovy-all:2.4.0'
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT'
@@ -38,9 +42,7 @@ project(':example') {
 	dependencies {
 		compile rootProject
 
-		compile 'org.apache.commons:commons-lang3:3.3.2'
-		compile 'commons-beanutils:commons-beanutils:1.9.2'
-		compile 'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
+		libs.each { runtime it }
 	}
 
 	mainClassName = 'Sample'
