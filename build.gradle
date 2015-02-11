@@ -43,7 +43,7 @@ project(':example') {
 		compile 'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
 	}
 
-	mainClassName = 'Sample2'
+	mainClassName = 'Sample'
 }
 
 task dist(type: Zip, dependsOn: jar) {
