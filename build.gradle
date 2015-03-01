@@ -4,14 +4,13 @@ apply plugin: 'groovy'
 version = '0.1'
 
 def enc = 'UTF-8'
+tasks.withType(AbstractCompile)*.options*.encoding = enc
 
 def libs = [
 	'org.apache.commons:commons-lang3:3.3.2',
 	'commons-beanutils:commons-beanutils:1.9.2',
 	'org.apache.commons:commons-ognl:4.0-SNAPSHOT'
 ]
-
-compileJava.options.encoding = enc
 
 repositories {
 	jcenter()
@@ -22,7 +21,7 @@ repositories {
 dependencies {
 	libs.each { compile it }
 
-	testCompile 'org.codehaus.groovy:groovy-all:2.4.0'
+	testCompile 'org.codehaus.groovy:groovy-all:2.3.10'
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.3-SNAPSHOT'
 }
 
@@ -30,7 +29,7 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'application'
 
-	compileJava.options.encoding = enc
+	tasks.withType(AbstractCompile)*.options*.encoding = enc
 
 	repositories {
 		jcenter()
@@ -57,4 +56,8 @@ task dist(type: Zip, dependsOn: jar) {
 
 artifacts {
 	archives dist
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.3'
 }
